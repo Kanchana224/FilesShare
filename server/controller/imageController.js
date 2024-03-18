@@ -43,14 +43,19 @@ export const getImage = async (request, response) => {
 
 }
 
-export const downloadfile = async (req , res) => {
+export const downloadFile = async (req, res) => {
     try {
         const file = await File.findById(req.params._id);
+        
+        if (!file) {
+            return res.status(404).json({ msg: 'File not found.' });
+        }
+
         file.downloadCount++;
         await file.save();
         res.download(file.path, file.name);
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         res.status(500).json({ msg: 'Internal Server Error' });
     }
 }
